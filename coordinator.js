@@ -26,6 +26,9 @@ class Coordinator {
         task.clients = self.clients;
         task.run();
       });
+      socket.on('getTaskDefinitions', function (cb) {
+        cb(tasks);
+      });
     });
   }
 

@@ -1,12 +1,16 @@
+var Q = require('q');
+
 class Client {
   constructor (clientInfo, socket) {
     this.uuid = clientInfo.uuid;
     this.socket = socket;
   }
 
-  run (workUnit, task) {
-    console.log('Pretending to send work to client.');
-    task(workUnit);
+  run (workUnit) {
+    console.log('Sending work unit ' + workUnit.uuid + ' to client ' + this.uuid + '.');
+    var defered = Q.defer();
+    this.socket.emit('newWorkUnit', workUnit, defered.resolve);
+    return defered.promise;
   }
 }
 

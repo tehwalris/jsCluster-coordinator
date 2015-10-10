@@ -23,13 +23,19 @@ class Task {
   _split () {
     this.workUnits.all = _.indexBy(this.definition.functions.split(this.input, WorkUnit), 'uuid');
     this.workUnits.notStarted = _.clone(this.workUnits.all);
+    var self = this;
+    _.forEach(this.workUnits.all, function (workUnit) {
+      workUnit.task = self.definition.task;
+    });
   }
 
   _runWorkUnits () {
     while(!_.isEmpty(this.workUnits.notStarted)) {
       var workUnit = this._popWorkUnit();
       var client = _.sample(this.clients.get());
-      client.run(workUnit, this.definition.functions.work);
+      client.run(workUnit).then(function (output) {
+        console.log('Work unit ' + workUnit.uuid + ' returned: ' + output + '.');
+      });
     }
   }
 

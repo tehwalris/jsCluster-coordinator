@@ -1,6 +1,7 @@
 var _ = require('lodash');
+var functionToString = require('function-to-string');
 
-module.exports = {
+var tasks = {
   test: {
     functions: {
       split: function (input, WorkUnit) {
@@ -9,7 +10,15 @@ module.exports = {
       },
       work: function (workUnit) {
         console.log('Working on ' + workUnit.data + '.');
+        return 'result of ' + workUnit.data;
       }
     }
   }
 };
+
+_.forEach(tasks, function (task, taskKey) {
+  task.task = taskKey;
+  task.functions.work = functionToString(task.functions.work);
+});
+
+module.exports = tasks;
