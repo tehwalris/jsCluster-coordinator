@@ -2,6 +2,7 @@ var _ = require('lodash');
 var Client = require('./client');
 var ClientList = require('./clientList');
 var Task = require('./task');
+var tasks = require('./tasks');
 
 class Coordinator {
   constructor (io) {
@@ -21,18 +22,7 @@ class Coordinator {
         self._deregister(socket);
       });
       socket.on('runTestTask', function () {
-        var definition = {
-          functions: {
-            split: function (input, WorkUnit) {
-              console.log('Splitting.');
-              return _.map(input, function(item) {return new WorkUnit(item);});
-            },
-            work: function (workUnit) {
-              console.log('Working on ' + workUnit.data + '.');
-            }
-          }
-        };
-        var task = new Task(definition, ['a', 'b', 'c']);
+        var task = new Task(tasks.test, ['a', 'b', 'c']);
         task.clients = self.clients;
         task.run();
       });
