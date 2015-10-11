@@ -21,7 +21,9 @@ class ClientList {
   }
 
   removeBySocket (socket) {
-    return this.removeByUUID(this._socketOwners[socket.id].uuid);
+    var client = this._socketOwners[socket.id];
+    if(client)
+      return this.removeByUUID(client.uuid);
   }
 }
 

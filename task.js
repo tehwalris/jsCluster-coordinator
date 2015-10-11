@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var Q = require('q');
 var WorkUnit = require('./workUnit');
 var ClientList = require('./clientList');
 
@@ -17,26 +18,30 @@ class Task {
     if(_.isEmpty(this.clients.get()))
       throw 'No clients assigned to task.';
     this._split();
-    this._runWorkUnits();
+    this._runWorkUnits()
+    .then(() => {
+      console.log(this.workUnits.all);
+    });
   }
 
   _split () {
     this.workUnits.all = _.indexBy(this.definition.functions.split(this.input, WorkUnit), 'uuid');
     this.workUnits.notStarted = _.clone(this.workUnits.all);
     var self = this;
-    _.forEach(this.workUnits.all, function (workUnit) {
+    _.forEach(this.workUnits.all, (workUnit) => {
       workUnit.task = self.definition.task;
     });
   }
 
   _runWorkUnits () {
+    var promises = [];
     while(!_.isEmpty(this.workUnits.notStarted)) {
       var workUnit = this._popWorkUnit();
       var client = _.sample(this.clients.get());
-      client.run(workUnit).then(function (output) {
-        console.log('Work unit ' + workUnit.uuid + ' returned: ' + output + '.');
-      });
+      delete this.workUnits.notStarted[workUnit.uuid];
+      promises.push(client.run(workUnit));
     }
+    return Q.all(promises);
   }
 
   _popWorkUnit () {

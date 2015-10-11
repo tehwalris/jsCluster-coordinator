@@ -4,7 +4,5 @@ var io = require('socket.io')(http);
 
 var coordinator = new (require('./coordinator'))(io);
 
-console.log('Starting jsCluster coordinator...');
-http.listen(3210, function () {
-  console.log('done');
-});
+console.log('Starting jsCluster coordinator.');
+http.listen(3210, () => {console.log('Websocket up.');});

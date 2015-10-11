@@ -13,20 +13,20 @@ class Coordinator {
 
   _configureIO () {
     var self = this;
-    this.io.on('connection', function (socket) {
+    this.io.on('connection', (socket) => {
       console.log('Client connected to websocket.');
-      socket.on('registerClient', function (clientInfo) {
+      socket.on('registerClient', (clientInfo) => {
         self._register(socket, clientInfo);
       });
-      socket.on('disconnect', function () {
+      socket.on('disconnect', () => {
         self._deregister(socket);
       });
-      socket.on('runTestTask', function () {
+      socket.on('runTestTask', () => {
         var task = new Task(tasks.test, ['a', 'b', 'c']);
         task.clients = self.clients;
         task.run();
       });
-      socket.on('getTaskDefinitions', function (cb) {
+      socket.on('getTaskDefinitions', (cb) => {
         cb(tasks);
       });
     });
