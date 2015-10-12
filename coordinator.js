@@ -21,10 +21,12 @@ class Coordinator {
       socket.on('disconnect', () => {
         self._deregister(socket);
       });
-      socket.on('runTestTask', () => {
-        var task = new Task(tasks.test, ['a', 'b', 'c']);
+      socket.on('startTask', (request, cb) => {
+        var task = new Task(tasks[request.task], request.input);
         task.clients = self.clients;
-        task.run();
+        task.run()
+        .then((data) => cb('resolve', data))
+        .catch((error) => cb('reject', error));
       });
       socket.on('getTaskDefinitions', (cb) => {
         cb(tasks);

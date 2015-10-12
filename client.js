@@ -7,7 +7,6 @@ class Client {
   }
 
   run (workUnit) {
-    console.log('Sending work unit ' + workUnit.uuid + ' to client ' + this.uuid + '.');
     var defered = Q.defer();
     setTimeout(defered.reject.bind(this, 'Client timed out running work unit.', 'client'), 60000); 
     this.socket.emit('newWorkUnit', workUnit, (response) => {

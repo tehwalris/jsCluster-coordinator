@@ -18,14 +18,13 @@ class Task {
     if(_.isEmpty(this.clients.get()))
       throw 'No clients assigned to task.';
     this._split();
-    this._runWorkUnits()
-    .then(() => {
-      console.log(this.workUnits.all);
-    });
+    return this._runWorkUnits()
+    .then(() => this._join());
   }
 
   _split () {
-    this.workUnits.all = _.indexBy(this.definition.functions.split(this.input, WorkUnit), 'uuid');
+    this.workUnits.asGiven = this.definition.functions.split(this.input, WorkUnit);
+    this.workUnits.all = _.indexBy(this.workUnits.asGiven, 'uuid');
     this.workUnits.notStarted = _.clone(this.workUnits.all);
     var self = this;
     _.forEach(this.workUnits.all, (workUnit) => {
@@ -42,6 +41,10 @@ class Task {
       promises.push(client.run(workUnit));
     }
     return Q.all(promises);
+  }
+
+  _join () {
+    return this.definition.functions.join(_.map(this.workUnits.asGiven, 'result'));
   }
 
   _popWorkUnit () {

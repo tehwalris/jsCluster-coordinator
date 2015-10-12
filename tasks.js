@@ -5,12 +5,13 @@ var tasks = {
   test: {
     functions: {
       split: function (input, WorkUnit) {
-        console.log('Splitting.');
         return _.map(input, function(item) {return new WorkUnit(item);});
       },
       work: function (workUnit) {
-        console.log('Working on ' + workUnit.data + '.');
         return 'result of ' + workUnit.data;
+      },
+      join: function (returnData) {
+        return returnData;
       }
     }
   }
