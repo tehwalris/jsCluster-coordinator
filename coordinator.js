@@ -3,10 +3,12 @@ var Client = require('./client');
 var ClientList = require('./clientList');
 var Task = require('./task');
 var tasks = require('./tasks');
+var log = require('./log');
 
 class Coordinator {
   constructor (io) {
     this.io = io;
+    this.ioMonitoring = io.of('monitoring'); 
     this._configureIO();
     this.clients = new ClientList();
   }
@@ -14,7 +16,7 @@ class Coordinator {
   _configureIO () {
     var self = this;
     this.io.on('connection', (socket) => {
-      console.log('Client connected to websocket.');
+      log.event('Client connected to websocket.');
       socket.on('registerClient', (clientInfo) => {
         self._register(socket, clientInfo);
       });
@@ -32,17 +34,20 @@ class Coordinator {
         cb(tasks);
       });
     });
+    this.ioMonitoring.on('connection', (socket) => {
+      log.event('Client connected to monitoring websocket.');
+    });
   }
 
   _register (socket, clientInfo) {
     this.clients.add(new Client(clientInfo, socket));
-    console.log('Client ' + clientInfo.uuid + ' registered.');
+    log.event('Client ' + clientInfo.uuid + ' registered.');
   }
 
   _deregister (socket) {
     var client = this.clients.removeBySocket(socket);
     if(client)
-      console.log('Client ' + client.uuid + ' deregistered.');
+      log.event('Client ' + client.uuid + ' deregistered.');
   }
 }
 
