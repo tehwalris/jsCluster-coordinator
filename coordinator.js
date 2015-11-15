@@ -8,7 +8,6 @@ var log = require('./log');
 class Coordinator {
   constructor (io) {
     this.io = io;
-    this.ioMonitoring = io.of('monitoring'); 
     this._configureIO();
     this.clients = new ClientList();
   }
@@ -33,9 +32,6 @@ class Coordinator {
       socket.on('getTaskDefinitions', (cb) => {
         cb(tasks);
       });
-    });
-    this.ioMonitoring.on('connection', (socket) => {
-      log.event('Client connected to monitoring websocket.');
     });
   }
 
