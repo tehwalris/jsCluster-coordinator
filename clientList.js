@@ -25,6 +25,10 @@ class ClientList {
     if(client)
       return this.removeByUUID(client.uuid);
   }
+
+  getSocketOwner (socket) {
+    return this._socketOwners[socket.id];
+  }
 }
 
 module.exports = ClientList;
