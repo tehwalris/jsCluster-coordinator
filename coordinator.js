@@ -24,11 +24,21 @@ class Coordinator {
       socket.on('startTask', (request, cb) => {
         var task = new Task(tasks[request.task], request.input);
         task.clients = this.clients;
-        log.event('Task ' + task.uuid + ' started', {type: 'taskStart', uuid: task.uuid, clientUUID: task.clients.getSocketOwner(socket).uuid});
+        log.event('Task ' + task.uuid + ' started', {
+          type: 'taskStart',
+          uuid: task.uuid,
+          clientUUID: task.clients.getSocketOwner(socket).uuid,
+          request: request
+        });
         task.run()
         .then((data) => {
           cb('resolve', data)
-          log.event('Task ' + task.uuid + ' completed', {type: 'taskComplete', uuid: task.uuid, clientUUID: task.clients.getSocketOwner(socket).uuid});
+          log.event('Task ' + task.uuid + ' completed', {
+            type: 'taskComplete',
+            uuid: task.uuid,
+            clientUUID: task.clients.getSocketOwner(socket).uuid,
+            timeLog: task.timeLog.exportMillis()
+          });
         })
         .catch((error) => cb('reject', error));
       });

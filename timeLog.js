@@ -13,7 +13,7 @@ class TimeLogService {
     var startReference = this._referenceTimes[0];
     return _.map(this._referenceTimes, (reference) => {
       return {
-        event: event,
+        event: reference.event,
         time: (reference.time[0] - startReference.time[0]) * 1000 + (reference.time[1] - startReference.time[1]) / 1000000
       };
     });
