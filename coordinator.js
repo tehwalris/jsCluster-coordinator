@@ -37,8 +37,8 @@ class Coordinator {
             type: 'taskComplete',
             uuid: task.uuid,
             clientUUID: task.clients.getSocketOwner(socket).uuid,
-            timeLog: task.timeLog.exportMillis(),
-            workUnitTimeLogs: _.mapValues(task.workUnits.all, (workUnit) => workUnit.timeLog)
+            timeLog: task.timeLog.exportMillis()/*,
+            workUnitTimeLogs: _.mapValues(task.workUnits.all, (workUnit) => workUnit.timeLog)*/
           });
         })
         .catch((error) => cb('reject', error));
