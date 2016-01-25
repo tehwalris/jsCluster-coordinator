@@ -19,6 +19,41 @@ var tasks = {
   primeDemo: {
     functions: {
       split: function (input, WorkUnit) {
+        var step = 200;
+        var low = input.center - Math.abs(Math.floor(input.range / 2));
+        var high = input.center + Math.abs(Math.ceil(input.range / 2));
+        var workUnits = [];
+        for(var current = low; current < high; current += step) {
+          workUnits.push(new WorkUnit({low: current, high: current + step}));
+        }
+        return workUnits;
+      },
+      work: function (workUnit) {
+        var primes = [];
+        for(var n = workUnit.data.low; n < workUnit.data.high; n++) {
+          if(isPrime(n))
+            primes.push(n);
+        }
+        return primes;
+        function isPrime (n) {
+          if(n < 3) return false;
+          for(var i = 3; i < n; i++) 
+            if(n % i === 0) return false;
+          return true;
+        }
+      },
+      join: function (returnData) {
+        var primes = [];
+        _.forEach(returnData, (part) => {
+          primes = primes.concat(part);
+        });
+        return primes;
+      }
+    }
+  },
+  primeDemoOriginal: {
+    functions: {
+      split: function (input, WorkUnit) {
         var low = input.center - Math.floor(input.range / 2);
         var high = input.center + Math.ceil(input.range / 2);
         return _.map(_.range(low, high + 1), (n) => new WorkUnit(n));

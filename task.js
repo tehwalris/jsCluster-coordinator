@@ -43,10 +43,10 @@ class Task {
 
   _runWorkUnits () {
     this.timeLog.log('startDistribution');
-    var promises = [];
-    while(!_.isEmpty(this.workUnits.notStarted)) {
+    var promises = [], clients = _.values(this.clients.get());
+    for(var i = 0; !_.isEmpty(this.workUnits.notStarted); i++) {
       var workUnit = this._popWorkUnit();
-      var client = _.sample(this.clients.get());
+      var client = clients[i % clients.length];
       delete this.workUnits.notStarted[workUnit.uuid];
       promises.push(client.run(workUnit));
       this.distribution[client.uuid] = (this.distribution[client.uuid] || 0) + 1;
